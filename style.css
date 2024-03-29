@@ -17,7 +17,7 @@ body {
   flex-direction: column;
   min-height: 100vh;
   color: #fff;
-  background-image: url("/src/decorative-background-with-smoke.jpg");
+  background-image: url("src/decorative-background-with-smoke.jpg");
   padding: 0;
 }
 header {
@@ -85,7 +85,7 @@ main {
   color: var(--grey);
   margin-bottom: 1rem;
 }
-#tasks .tasks {
+#tasks .task {
   display: flex;
   padding: 1rem;
   border-radius: 1rem;
@@ -93,24 +93,24 @@ main {
   justify-content: space-between;
   background-color: var(--darkest);
 }
-.tasks .content {
+.task .content {
   flex: 1 1 0%;
 }
-.tasks .content .text {
+.task .content .text {
   color: var(--light);
   font-size: 1.125rem;
   width: 100%;
   display: block;
   transition: 0.4s;
 }
-.tasks .content .text:not(:read-only) {
+.task .content .text:not(:read-only) {
   color: var(--pink);
 }
-.tasks .actions {
+.task .actions {
   display: flex;
   margin: 0 -0.5rem;
 }
-.tasks .actions button {
+.task .actions button {
   cursor: pointer;
   margin: 0 0.5rem;
   font-size: 1.125rem;
@@ -118,17 +118,22 @@ main {
   text-transform: uppercase;
   transition: 0.4s;
 }
-.tasks .actions button:hover {
+.task .actions button:hover {
   opacity: 0.8;
 }
-.tasks .actions button:active {
+.task .actions button:active {
   opacity: 0.5;
 }
-.tasks .actions .edit {
+.task .actions .edit {
   background-image: linear-gradient(to right, var(--pink), var(--purple));
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
-.tasks .actions .delete {
+.task .actions .delete {
   color: crimson;
+}
+.task .actions .done {
+  background-image: linear-gradient(to right, var(--grey), var(--purple));
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
