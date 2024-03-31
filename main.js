@@ -84,6 +84,10 @@ class TaskManager {
     // Save task to local storage
     this.saveTaskToLocalStorage(task);
   }
+  deleteTask(taskElement, task) {
+    this.listElement.removeChild(taskElement);
+    this.removeFromLocalStorage(task);
+  }
 
   toggleEdit(editButton, inputField) {
     if (editButton.innerText.toLowerCase() === "edit") {
@@ -120,6 +124,11 @@ class TaskManager {
     tasks.forEach(task => {
       this.addTaskToDOM(task);
     });
+  }
+  removeFromLocalStorage(task) {
+    let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    tasks = tasks.filter(item => item !== task);
+    localStorage.setItem('tasks', JSON.stringify(tasks));
   }
 
   addTaskToDOM(task) {
@@ -171,6 +180,7 @@ class TaskManager {
     // Bind click event to delete button
     taskDeleteButton.addEventListener('click', () => {
       this.listElement.removeChild(taskElement);
+    this.removeFromLocalStorage(task)
     });
 
     // Bind click event to done button
