@@ -73,20 +73,23 @@ class TaskManager {
 
     // Bind click event to delete button
     taskDeleteButton.addEventListener('click', () => {
-      this.listElement.removeChild(taskElement);
+      this.deleteTask(taskElement, task);
     });
 
     // Bind click event to done button
     taskDoneButton.addEventListener('click', () => {
       this.toggleDone(taskContentElement.querySelector('.text'));
+      
     });
 
     // Save task to local storage
     this.saveTaskToLocalStorage(task);
   }
+
   deleteTask(taskElement, task) {
     this.listElement.removeChild(taskElement);
     this.removeFromLocalStorage(task);
+    
   }
 
   toggleEdit(editButton, inputField) {
@@ -101,34 +104,35 @@ class TaskManager {
   }
 
   toggleDone(taskTextElement) {
-        const currentTextDecoration=taskTextElement.style.textDecoration;
-        if(currentTextDecoration&&currentTextDecoration.includes('line-through')){
-          // If the current style includes line-through, remove it
-          taskTextElement.style.textDecoration='';
-        }
-        else{
-          // Otherwise, add line-through
-        taskTextElement.style.textDecoration = 'line-through';
-        taskTextElement.style.textDecorationColor='red';
-        taskTextElement.style.textDecorationThickness='4px';
-        }
-      }
+    const currentTextDecoration = taskTextElement.style.textDecoration;
+    if (currentTextDecoration && currentTextDecoration.includes('line-through')) {
+      taskTextElement.style.textDecoration = '';
+    } else {
+      taskTextElement.style.textDecoration = 'line-through';
+      taskTextElement.style.textDecorationColor='red';
+      taskTextElement.style.textDecorationThickness='4px';
+    }
+  }
+
   saveTaskToLocalStorage(task) {
     let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
     tasks.push(task);
     localStorage.setItem('tasks', JSON.stringify(tasks));
   }
 
+  removeFromLocalStorage(task) {
+    let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    tasks = tasks.filter(item => item !== task);
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+  }
+
+ 
+
   loadTasksFromLocalStorage() {
     let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
     tasks.forEach(task => {
       this.addTaskToDOM(task);
     });
-  }
-  removeFromLocalStorage(task) {
-    let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
-    tasks = tasks.filter(item => item !== task);
-    localStorage.setItem('tasks', JSON.stringify(tasks));
   }
 
   addTaskToDOM(task) {
@@ -179,8 +183,7 @@ class TaskManager {
 
     // Bind click event to delete button
     taskDeleteButton.addEventListener('click', () => {
-      this.listElement.removeChild(taskElement);
-    this.removeFromLocalStorage(task)
+      this.deleteTask(taskElement, task);
     });
 
     // Bind click event to done button
@@ -189,7 +192,6 @@ class TaskManager {
     });
   }
 }
-
 
 // Create TaskManager instance
 const taskManager = new TaskManager();
