@@ -23,6 +23,12 @@ class TaskManager {
     // Get the task content from the input field
     const task = this.input.value;
 
+    // Create a task object with task text and done state
+    const taskObject = {
+      text: task,
+      done: false // Initially set to false
+    };
+
     // Create a task element
     const taskElement = document.createElement('div');
     taskElement.classList.add('task');
@@ -30,7 +36,7 @@ class TaskManager {
     // Create a task content element
     const taskContentElement = document.createElement('div');
     taskContentElement.classList.add('content');
-    taskContentElement.innerHTML = `<input type="text" class="text" value="${task}" readonly>`;
+    taskContentElement.innerHTML = `<input type="text" class="text" value="${taskObject.text}" ${taskObject.done ? 'style="text-decoration: line-through; text-decoration-color: red; text-decoration-thickness: 4px;"' : ''} readonly>`;
 
     // Create task action buttons element
     const taskActionsElement = document.createElement('div');
@@ -73,23 +79,21 @@ class TaskManager {
 
     // Bind click event to delete button
     taskDeleteButton.addEventListener('click', () => {
-      this.deleteTask(taskElement, task);
+      this.deleteTask(taskElement, taskObject);
     });
 
     // Bind click event to done button
     taskDoneButton.addEventListener('click', () => {
-      this.toggleDone(taskContentElement.querySelector('.text'));
-      
+      this.toggleDone(taskContentElement.querySelector('.text'), taskObject);
     });
 
     // Save task to local storage
-    this.saveTaskToLocalStorage(task);
+    this.saveTaskToLocalStorage(taskObject);
   }
 
-  deleteTask(taskElement, task) {
+  deleteTask(taskElement, taskObject) {
     this.listElement.removeChild(taskElement);
-    this.removeFromLocalStorage(task);
-    
+    this.removeFromLocalStorage(taskObject);
   }
 
   toggleEdit(editButton, inputField) {
@@ -103,30 +107,42 @@ class TaskManager {
     }
   }
 
-  toggleDone(taskTextElement) {
-    const currentTextDecoration = taskTextElement.style.textDecoration;
-    if (currentTextDecoration && currentTextDecoration.includes('line-through')) {
-      taskTextElement.style.textDecoration = '';
-    } else {
+  toggleDone(taskTextElement, taskObject) {
+    // Toggle the task's done status
+    taskObject.done = !taskObject.done;
+
+    // Update text decoration based on task's done state
+    if (taskObject.done) {
       taskTextElement.style.textDecoration = 'line-through';
-      taskTextElement.style.textDecorationColor='red';
-      taskTextElement.style.textDecorationThickness='4px';
+      taskTextElement.style.textDecorationColor = 'red';
+      taskTextElement.style.textDecorationThickness = '4px';
+    } else {
+      taskTextElement.style.textDecoration = '';
     }
+
+    // Save updated task to local storage
+    this.saveTaskToLocalStorage(taskObject);
   }
 
-  saveTaskToLocalStorage(task) {
+  saveTaskToLocalStorage(taskObject) {
     let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
-    tasks.push(task);
+    // Check if the task is already in the storage
+    const index = tasks.findIndex(task => task.text === taskObject.text);
+    if (index !== -1) {
+      // If found, update the existing task
+      tasks[index] = taskObject;
+    } else {
+      // If not found, add the new task
+      tasks.push(taskObject);
+    }
     localStorage.setItem('tasks', JSON.stringify(tasks));
   }
 
-  removeFromLocalStorage(task) {
+  removeFromLocalStorage(taskObject) {
     let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
-    tasks = tasks.filter(item => item !== task);
+    tasks = tasks.filter(task => task.text !== taskObject.text);
     localStorage.setItem('tasks', JSON.stringify(tasks));
   }
-
- 
 
   loadTasksFromLocalStorage() {
     let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
@@ -135,7 +151,7 @@ class TaskManager {
     });
   }
 
-  addTaskToDOM(task) {
+  addTaskToDOM(taskObject) {
     // Create a task element
     const taskElement = document.createElement('div');
     taskElement.classList.add('task');
@@ -143,7 +159,7 @@ class TaskManager {
     // Create a task content element
     const taskContentElement = document.createElement('div');
     taskContentElement.classList.add('content');
-    taskContentElement.innerHTML = `<input type="text" class="text" value="${task}" readonly>`;
+    taskContentElement.innerHTML = `<input type="text" class="text" value="${taskObject.text}" ${taskObject.done ? 'style="text-decoration: line-through; text-decoration-color: red; text-decoration-thickness: 4px;"' : ''} readonly>`;
 
     // Create task action buttons element
     const taskActionsElement = document.createElement('div');
@@ -183,12 +199,12 @@ class TaskManager {
 
     // Bind click event to delete button
     taskDeleteButton.addEventListener('click', () => {
-      this.deleteTask(taskElement, task);
+      this.deleteTask(taskElement, taskObject);
     });
 
     // Bind click event to done button
     taskDoneButton.addEventListener('click', () => {
-      this.toggleDone(taskContentElement.querySelector('.text'));
+      this.toggleDone(taskContentElement.querySelector('.text'), taskObject);
     });
   }
 }
