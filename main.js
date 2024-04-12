@@ -211,3 +211,8 @@ class TaskManager {
 
 // Create TaskManager instance
 const taskManager = new TaskManager();
+const body=document.querySelector('body');
+body.style.backgroundImage="url('https://st4.depositphotos.com/13349494/23275/i/450/depositphotos_232755656-stock-photo-grey-shabby-wooden-material-black.jpg')";
+body.style.backgroundRepeat='no-repeat';
+body.style.backgroundSize="cover";
+
